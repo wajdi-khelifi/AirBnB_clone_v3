@@ -67,6 +67,51 @@ test_file_storage.py'])
             self.assertTrue(len(func[1].__doc__) >= 1,
                             "{:s} method needs a docstring".format(func[0]))
 
+    def test_count_method_docstring(self):
+        """Test for the presence of docstring in FileStorage.count() method"""
+        self.assertIsNot(FileStorage.count.__doc__, None, "count method needs a docstring")
+        self.assertTrue(len(FileStorage.count.__doc__) >= 1, "count method needs a docstring")
+
+    def test_get_method_docstring(self):
+        """Test for the presence of docstring in FileStorage.get() method"""
+        self.assertIsNot(FileStorage.get.__doc__, None, "get method needs a docstring")
+        self.assertTrue(len(FileStorage.get.__doc__) >= 1, "get method needs a docstring")
+
+    def test_count_method(self):
+        """Test the FileStorage.count() method"""
+        state1 = State(name="California")
+        state2 = State(name="New York")
+        file_storage = FileStorage()
+        file_storage.new(state1)
+        file_storage.new(state2)
+        file_storage.save()
+
+        all_objects_count = file_storage.count()
+        self.assertEqual(all_objects_count, 2)
+
+        state_count = file_storage.count(State)
+        self.assertEqual(state_count, 2)
+
+        non_existent_count = file_storage.count(Review)
+        self.assertEqual(non_existent_count, 0)
+
+    def test_get_method(self):
+        """Test the FileStorage.get() method"""
+        state1 = State(name="California")
+        state2 = State(name="New York")
+        file_storage = FileStorage()
+        file_storage.new(state1)
+        file_storage.new(state2)
+        file_storage.save()
+
+        state1_id = state1.id
+        retrieved_state = file_storage.get(State, state1_id)
+        self.assertEqual(retrieved_state, state1)
+
+        non_existent_id = "non_existent_id"
+        non_existent_state = file_storage.get(State, non_existent_id)
+        self.assertIsNone(non_existent_state)
+
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""

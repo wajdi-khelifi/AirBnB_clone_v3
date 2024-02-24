@@ -67,6 +67,49 @@ test_db_storage.py'])
             self.assertTrue(len(func[1].__doc__) >= 1,
                             "{:s} method needs a docstring".format(func[0]))
 
+    def test_get_method_docstring(self):
+        """Test for the presence of docstring in DBStorage.get() method"""
+        self.assertIsNot(DBStorage.get.__doc__, None, "get method needs a docstring")
+        self.assertTrue(len(DBStorage.get.__doc__) >= 1, "get method needs a docstring")
+
+    def test_count_method_docstring(self):
+        """Test for the presence of docstring in DBStorage.count() method"""
+        self.assertIsNot(DBStorage.count.__doc__, None, "count method needs a docstring")
+        self.assertTrue(len(DBStorage.count.__doc__) >= 1, "count method needs a docstring")
+
+    def test_get_method(self):
+        """Test the DBStorage.get() method"""
+        state1 = State(name="California")
+        state2 = State(name="New York")
+        models.storage.new(state1)
+        models.storage.new(state2)
+        models.storage.save()
+
+        state1_id = state1.id
+        retrieved_state = DBStorage().get(State, state1_id)
+        self.assertEqual(retrieved_state, state1)
+
+        non_existent_id = "non_existent_id"
+        non_existent_state = DBStorage().get(State, non_existent_id)
+        self.assertIsNone(non_existent_state)
+
+    def test_count_method(self):
+        """Test the DBStorage.count() method"""
+        state1 = State(name="California")
+        state2 = State(name="New York")
+        models.storage.new(state1)
+        models.storage.new(state2)
+        models.storage.save()
+
+        all_objects_count = DBStorage().count()
+        self.assertEqual(all_objects_count, 2)
+
+        state_count = DBStorage().count(State)
+        self.assertEqual(state_count, 2)
+
+        non_existent_count = DBStorage().count(Review)
+        self.assertEqual(non_existent_count, 0)
+
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
