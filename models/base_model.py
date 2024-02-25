@@ -73,3 +73,9 @@ class BaseModel:
     def delete(self):
         """delete the current instance from the storage"""
         models.storage.delete(self)
+
+    def update(self, **kwargs):
+        """update key-value pair"""
+        if kwargs:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
